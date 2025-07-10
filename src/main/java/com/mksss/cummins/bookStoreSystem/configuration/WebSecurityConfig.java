@@ -5,6 +5,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 import java.net.http.HttpRequest;
@@ -28,5 +32,31 @@ public class WebSecurityConfig {
 
 
         return httpSecuity.build();
+    }
+
+    @Bean
+    public UserDetailsService userDetailsService(){
+
+        UserDetails chandra = User.withUsername("chandra")
+                .password("{noop}chandra123")
+                .roles("ADMIN")
+                .build();
+
+        UserDetails gauri = User.withUsername("gauri")
+                .password("{noop}gauri123")
+                .roles("DM")
+                .build();
+
+        UserDetails vrinda = User.withUsername("vrinda")
+                .password("{noop}vrinda123")
+                .roles("PM")
+                .build();
+
+        UserDetails shriva = User.withUsername("shriva")
+                .password("{noop}shriva123")
+                .roles("MANAGER")
+                .build();
+
+        return new InMemoryUserDetailsManager(chandra,gauri,vrinda,shriva);
     }
 }
