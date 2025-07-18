@@ -1,5 +1,8 @@
 package com.mksss.cummins.bookStoreSystem.configuration;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -36,7 +39,7 @@ public class WebSecurityConfig {
 
     @Bean
     public UserDetailsService userDetailsService(){
-
+        //{noop} no op password encoder
         UserDetails chandra = User.withUsername("chandra")
                 .password("{noop}chandra123")
                 .roles("ADMIN")
@@ -59,4 +62,5 @@ public class WebSecurityConfig {
 
         return new InMemoryUserDetailsManager(chandra,gauri,vrinda,shriva);
     }
+
 }

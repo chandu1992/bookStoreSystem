@@ -1,5 +1,7 @@
 package com.mksss.cummins.bookStoreSystem.util;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -7,26 +9,34 @@ import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-public class ResponseHandler {
-	public static ResponseEntity<Object> generateResponse(HttpStatus status, boolean error,String message, Object responseObj) {
-        Map<String, Object> map = new HashMap<String, Object>();
-        try {
-            map.put("timestamp", new Date());
-            map.put("status", status.value());
-            map.put("isSuccess", error);
-            map.put("message", message);
-            map.put("data", responseObj);
+public class ResponseHandler<T> {
 
-            return new ResponseEntity<Object>(map,status);
-        } catch (Exception e) {
-            map.clear();
-            map.put("timestamp", new Date());
-            map.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
-            map.put("isSuccess",false);
-            map.put("message", e.getMessage());
-            map.put("data", null);
-            return new ResponseEntity<Object>(map,status);
-        }
+    private T data;
+    private int statusCode;
+    private String message;
+
+    private LocalDateTime timestamp;
+
+    public ResponseHandler(T data, int statusCode, String message, LocalDateTime date) {
+        this.data = data;
+        this.statusCode = statusCode;
+        this.message = message;
+        this.timestamp = date;
     }
-    
+
+    public T getData() {
+        return data;
+    }
+
+    public int getStatusCode() {
+        return statusCode;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public LocalDateTime getTimestamp() {
+        return timestamp;
+    }
 }

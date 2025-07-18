@@ -1,8 +1,13 @@
 package com.mksss.cummins.bookStoreSystem.Controller;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
+import com.mksss.cummins.bookStoreSystem.exceptionHamdler.exceptions.DataNotFoundException;
+import com.mksss.cummins.bookStoreSystem.exceptionHamdler.exceptions.InternalServerError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,27 +31,31 @@ public class BookController {
 
 	@CrossOrigin
 	@GetMapping("/myBooksCollection")
-	public ResponseEntity<Object> myBooksCollection(
+	public ResponseEntity<List<BooksEntity>> myBooksCollection(
 
 	) {
 
 		try {
 			System.out.println("Inside generateOfferLetter controller....");
 
-			List<BooksEntity> resultData = bookService.myBooksCollection();
+			List<BooksEntity> resultData = bookService.myBooksCollection()
+					.orElseThrow(() -> new DataNotFoundException("Books collection not found"));
 
-			return ResponseHandler.generateResponse(HttpStatus.OK, true, "Success", resultData);
+			ResponseHandler<List<BooksEntity>>  response= new ResponseHandler<>(resultData,200,"Reuest was successful", LocalDateTime.now());
+			return new ResponseEntity(response,HttpStatus.OK);
+
+
 
 		} catch (Exception e) {
 			System.out.println(e);
-			throw new RuntimeException(e.getMessage());
+			throw new InternalServerError(e.getMessage());
 		}
 
 	}
 
 	@CrossOrigin
 	@GetMapping("/bookCategory")
-	public ResponseEntity<Object> getBookCategory(
+	public ResponseEntity<List<BookCategoryEntity>> getBookCategory(
 
 	) {
 
@@ -55,68 +64,80 @@ public class BookController {
 
 			List<BookCategoryEntity> resultData = bookService.getBookCategory();
 
-			return ResponseHandler.generateResponse(HttpStatus.OK, true, "Success", resultData);
+			ResponseHandler<List<BookCategoryEntity>>  response= new ResponseHandler<>(resultData,200,"Reuest was successful",LocalDateTime.now());
+			return new ResponseEntity(response,HttpStatus.OK);
 
 		} catch (Exception e) {
 			System.out.println(e);
-			throw new RuntimeException(e.getMessage());
+			throw new InternalServerError(e.getMessage());
 		}
 
 	}
 
 	@CrossOrigin
 	@GetMapping("/getBooksByCategory")
-	public ResponseEntity<Object> getBooksByCategory(
+	public ResponseEntity<Optional<List<BooksEntity>>> getBooksByCategory(
 			@RequestHeader(value = "categoryName", required = true) String categoryName) {
 
 		try {
 			System.out.println("Inside generateOfferLetter controller....");
 
-			List<BooksEntity> resultData = bookService.getBooksByItsCategory(categoryName);
+			Optional<List<BooksEntity>> resultData = Optional.ofNullable(bookService.getBooksByItsCategory(categoryName)
+					.orElseThrow(() -> new DataNotFoundException("Category " + categoryName + "Books not found")));
 
-			return ResponseHandler.generateResponse(HttpStatus.OK, true, "Success", resultData);
+			System.out.println(resultData);
+			ResponseHandler<Optional<List<BooksEntity>>>  response=null;
+			if(resultData.isPresent()){
+				response= new ResponseHandler<>(resultData,200,"Reuest was successful",LocalDateTime.now());
+			}
 
-		} catch (Exception e) {
+			return new ResponseEntity(response,HttpStatus.OK);
+		} catch (InternalServerError e) {
 			System.out.println(e);
-			throw new RuntimeException(e.getMessage());
+			throw new InternalServerError(e.getMessage());
 		}
 
 	}
 
 	@CrossOrigin
 	@GetMapping("/searchBookByName")
-	public ResponseEntity<Object> searchBookByName(
+	public ResponseEntity<List<BooksEntity>> searchBookByName(
 			@RequestHeader(value = "bookname", required = true) String bookname) {
 
 		try {
 			System.out.println("Inside generateOfferLetter controller....");
 
-			List<BooksEntity> resultData = bookService.searchBookByName(bookname);
+			List<BooksEntity> resultData = bookService.searchBookByName(bookname)
+					.orElseThrow(() -> new DataNotFoundException(bookname+"Book not found"));
 
-			return ResponseHandler.generateResponse(HttpStatus.OK, true, "Success", resultData);
+
+			ResponseHandler<List<BooksEntity>>  response= new ResponseHandler<>(resultData,200,"Reuest was successful",LocalDateTime.now());
+			return new ResponseEntity(response,HttpStatus.OK);
 
 		} catch (Exception e) {
 			System.out.println(e);
-			throw new RuntimeException(e.getMessage());
+			throw new InternalServerError(e.getMessage());
 		}
 
 	}
 
 	@CrossOrigin
 	@GetMapping("/searchBookByNameIgnorcase")
-	public ResponseEntity<Object> searchBookByNameIgnorcase(
+	public ResponseEntity<List<Map<String, Object>>> searchBookByNameIgnorcase(
 			@RequestHeader(value = "bookname", required = true) String bookname) {
 
 		try {
 			System.out.println("Inside generateOfferLetter controller....");
 
-			List<Map<String, Object>> resultData = bookService.searchBookByNameIgnorcase(bookname);
+			List<Map<String, Object>> resultData = bookService.searchBookByNameIgnorcase(bookname)
+					.orElseThrow(() -> new DataNotFoundException(bookname+"Book not found"));
 
-			return ResponseHandler.generateResponse(HttpStatus.OK, true, "Success", resultData);
+			ResponseHandler<List<Map<String, Object>>>  response= new ResponseHandler<>(resultData,200,"Reuest was successful",LocalDateTime.now());
+			return new ResponseEntity(response,HttpStatus.OK);
 
 		} catch (Exception e) {
 			System.out.println(e);
-			throw new RuntimeException(e.getMessage());
+			throw new InternalServerError(e.getMessage());
 		}
 
 	}

@@ -2,6 +2,7 @@ package com.mksss.cummins.bookStoreSystem.service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -10,13 +11,13 @@ import com.mksss.cummins.bookStoreSystem.entity.BooksEntity;
 
 public interface BookInfoService {
 
-	List<BooksEntity> myBooksCollection();
+	Optional<List<BooksEntity>> myBooksCollection();
 
 	List<BookCategoryEntity> getBookCategory();
+
+	Optional<List<BooksEntity>> getBooksByItsCategory(String categoryName);
+
+	Optional<List<BooksEntity>> searchBookByName(String bookname);
 	
-	List<BooksEntity> getBooksByItsCategory(String categoryName);
-	
-	List<BooksEntity> searchBookByName(String bookname);
-	
-	 List<Map<String, Object>> searchBookByNameIgnorcase(String bookname);
+	 Optional<List<Map<String, Object>>> searchBookByNameIgnorcase(String bookname);
 }

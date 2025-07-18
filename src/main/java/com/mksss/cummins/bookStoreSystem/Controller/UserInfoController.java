@@ -1,5 +1,7 @@
 package com.mksss.cummins.bookStoreSystem.Controller;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -33,15 +35,14 @@ public class UserInfoController {
 
 	@CrossOrigin
 	@PostMapping("/createAccount")
-	public ResponseEntity<Object> createUserAccount(@RequestBody(required = true) UserInfo userData) {
+	public ResponseEntity<ResponseHandler<UserInfoEntity>> createUserAccount(@RequestBody(required = true) UserInfo userData) {
 
 		try {
 			System.out.println("Inside generateOfferLetter controller....");
 
 			UserInfoEntity resultData = commonServices.createUserAccount(userData);
-
-			System.out.println(resultData);
-			return ResponseHandler.generateResponse(HttpStatus.OK, true, "Success", resultData);
+			ResponseHandler<UserInfoEntity> response= new ResponseHandler<>(resultData,200,"Reuest was successful", LocalDateTime.now());
+			return new ResponseEntity(response,HttpStatus.OK);
 		} catch (Exception e) {
 			System.out.println(e);
 			throw new RuntimeException(e.getMessage());
@@ -51,7 +52,7 @@ public class UserInfoController {
 	
 	@CrossOrigin
 	@PostMapping("/updatePassword")
-	public ResponseEntity<Object> createUserAccount(
+	public ResponseEntity<String> createUserAccount(
 				@RequestHeader(value = "mobilenumber", required = true) String mobilenumber,
 				@RequestHeader(value = "password", required = true) String password
 			)  {
@@ -61,8 +62,8 @@ public class UserInfoController {
 
 			String resultData = commonServices.updatePassword(mobilenumber,password);
 
-			System.out.println(resultData);
-			return ResponseHandler.generateResponse(HttpStatus.OK, true, "Success", resultData);
+			ResponseHandler<String> response= new ResponseHandler<>(resultData,200,"Reuest was successful",LocalDateTime.now());
+			return new ResponseEntity(response,HttpStatus.OK);
 		} catch (Exception e) {
 			System.out.println(e);
 			throw new RuntimeException(e.getMessage());
@@ -82,10 +83,13 @@ public class UserInfoController {
 
 			String resultData = commonServices.checkuserIsValidOrNot(mobilenumber,password);
 
+			ResponseHandler<String> response= new ResponseHandler<>(resultData,200,"Reuest was successful", LocalDateTime.now());
+
+
 			if(resultData.equals("login Sucesfully")) {
-				return ResponseHandler.generateResponse(HttpStatus.OK, true, "Success", resultData);
+				return new ResponseEntity(response,HttpStatus.OK);
 			}else {
-				return ResponseHandler.generateResponse(HttpStatus.UNAUTHORIZED, true, "Success", resultData);
+				return new ResponseEntity(response,HttpStatus.UNAUTHORIZED);
 			}
 			
 		} catch (Exception e) {

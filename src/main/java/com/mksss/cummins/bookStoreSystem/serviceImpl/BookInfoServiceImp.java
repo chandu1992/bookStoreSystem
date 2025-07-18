@@ -2,6 +2,7 @@ package com.mksss.cummins.bookStoreSystem.serviceImpl;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -26,9 +27,9 @@ public class BookInfoServiceImp implements BookInfoService {
 	JdbcTemplate temp ;
 	
 	@Override
-	public List<BooksEntity> myBooksCollection() {
+	public Optional<List<BooksEntity>> myBooksCollection() {
 		
-		return booksRepo.findAll();
+		return Optional.of(booksRepo.findAll());
 	}
 
 	@Override
@@ -38,28 +39,29 @@ public class BookInfoServiceImp implements BookInfoService {
 	}
 
 	@Override
-	public List<BooksEntity> getBooksByItsCategory(String categoryName) {
-		
-		
-		return booksRepo.findByItsCategory(categoryName);
+	public Optional<List<BooksEntity>> getBooksByItsCategory(String categoryName) {
+
+
+		List<BooksEntity> books = booksRepo.findByItsCategory(categoryName);
+
+		return books.isEmpty() ? Optional.empty() : Optional.of(books);
 	}
 
 	@Override
-	public List<BooksEntity> searchBookByName(String bookname) {
+	public Optional<List<BooksEntity>> searchBookByName(String bookname) {
 		// TODO Auto-generated method stub
-		return booksRepo.findByBookNameLike(bookname);
+		return Optional.ofNullable(booksRepo.findByBookNameLike(bookname));
 	}
 
 	@Override
-	public  List<Map<String, Object>> searchBookByNameIgnorcase(String bookname) {
+	public  Optional<List<Map<String, Object>>> searchBookByNameIgnorcase(String bookname) {
 		// TODO Auto-generated method stub
 		
 		String query = "select * from books_tbl where book_name Like '%"+bookname+"%'";
 		
 		
 		 List<Map<String, Object>> books = temp.queryForList(query);
-		 return books;
-		
-//		return booksRepo.findByBooknameIgnorcase(bookname);
+//		 return Optional.of(books);
+		return null;
 	}
 }
